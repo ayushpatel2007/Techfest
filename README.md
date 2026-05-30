@@ -3,8 +3,10 @@
 This repository contains a responsive, highly interactive landing page developed for the **IIT Bombay Techfest** task. The design revolves around a brutalist, "Toxic Bio-Hack" cyberpunk theme, merging modern UI/UX design with advanced front-end micro-interactions.
 
 ## 🔗 Live Links
-* **Live Preview:** [https://ayushpatel2007.github.io/Techfest/#competitions]
-* **Video Demo:** [Insert your Google Drive Video Link Here]
+* **Live Preview:**
+* [https://ayushpatel2007.github.io/Techfest/#competitions]
+* **Video Demo:**
+* []
 
 ## 🚀 Technical Features & Micro-Interactions
 
