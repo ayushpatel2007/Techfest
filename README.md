@@ -26,6 +26,3 @@ To run this project locally:
 2. Ensure both `index.html` and `soundtrack.mp3` are in the same root directory.
 3. Open `index.html` in any modern web browser. 
 *(Note: To activate the easter egg, simply type `cyborg` on your keyboard while viewing the page).*
-
----
-*Developed for the 2026 Campus Ambassador Challenge.*
