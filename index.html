@@ -3,161 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IIT Bombay Techfest | Cybernetic Protocol</title>
+    <title>IIT Bombay Techfest</title>
     <style>
+        /* Bio-Hack / Industrial Cyberpunk Variables */
         :root {
-            --holo-blue: #00e5ff;
-            --alert-red: #ff003c;
-            --deep-space: #020205;
-            --glass-bg: rgba(10, 15, 25, 0.6);
-            --glass-border: rgba(0, 229, 255, 0.2);
-            --text-main: #f0f0f0;
-            --font-display: 'Impact', 'Arial Black', sans-serif;
-            --font-mono: 'Courier New', Courier, monospace;
-            --font-sans: 'Segoe UI', Roboto, sans-serif;
+            --acid-green: #39ff14;
+            --deep-purple: #4a00e0;
+            --void-black: #09090b;
+            --surface-dark: #121216;
+            --text-light: #e0e0e0;
+            --font-head: 'Arial Black', Impact, sans-serif;
+            --font-body: 'Courier New', Courier, monospace;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
 
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--deep-space); }
-        ::-webkit-scrollbar-thumb { background: var(--holo-blue); }
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: var(--void-black); }
+        ::-webkit-scrollbar-thumb { background: var(--acid-green); border: 2px solid var(--void-black); }
 
         body {
-            background-color: var(--deep-space);
-            color: var(--text-main);
-            font-family: var(--font-sans);
+            background-color: var(--void-black);
+            color: var(--text-light);
+            font-family: var(--font-body);
             overflow-x: hidden;
-            background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 229, 255, 0.03) 3px, rgba(0, 229, 255, 0.03) 3px);
         }
 
-        /* Dynamic Canvas */
-        #matrix-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; }
-        .glass-wrapper { position: relative; z-index: 10; }
+        /* The Toxic Rain Background */
+        #toxic-rain {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1; opacity: 0.6; 
+        }
 
-        /* Navigation */
+        /* Heavy Top Navigation */
         nav {
-            position: fixed; width: 100%; top: 0; display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 4vw; background: rgba(10, 15, 25, 0.8); backdrop-filter: blur(15px);
-            border-bottom: 1px solid var(--glass-border); z-index: 1000;
+            position: fixed; width: 100%; top: 0; 
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 5vw; background: rgba(9, 9, 11, 0.9);
+            border-bottom: 4px solid var(--acid-green);
+            z-index: 1000; backdrop-filter: blur(8px);
         }
 
-        .logo { font-family: var(--font-display); font-size: 2rem; color: #fff; letter-spacing: 2px; text-transform: uppercase; }
-        .logo span { color: var(--alert-red); }
+        .logo { font-family: var(--font-head); font-size: 2.2rem; color: #fff; text-transform: uppercase; letter-spacing: -1px; }
+        .logo span { color: var(--acid-green); }
 
-        .nav-links { display: flex; gap: 30px; }
+        .nav-links { display: flex; gap: 40px; }
         .nav-links a {
-            color: var(--text-main); text-decoration: none; font-family: var(--font-mono); font-weight: bold;
-            font-size: 0.9rem; text-transform: uppercase; padding: 8px 15px;
-            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
-            transition: 0.3s;
+            color: var(--text-light); text-decoration: none; font-weight: bold;
+            font-size: 1rem; text-transform: uppercase;
+            position: relative; transition: 0.2s;
         }
-        .nav-links a:hover { background: var(--holo-blue); color: #000; box-shadow: 0 0 15px var(--holo-blue); }
+        .nav-links a::after {
+            content: ''; position: absolute; width: 100%; height: 3px;
+            bottom: -5px; left: 0; background-color: var(--acid-green);
+            transform: scaleX(0); transform-origin: right; transition: transform 0.3s ease;
+        }
+        .nav-links a:hover { color: var(--acid-green); }
+        .nav-links a:hover::after { transform: scaleX(1); transform-origin: left; }
 
-        /* Hero */
-        .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 5vw; }
-        
-        .status-badge {
-            display: inline-block; font-family: var(--font-mono); color: var(--holo-blue); background: rgba(0, 229, 255, 0.1);
-            border: 1px solid var(--holo-blue); padding: 5px 15px; margin-bottom: 20px; text-transform: uppercase;
-            font-size: 0.8rem; letter-spacing: 2px; align-self: flex-start;
+        /* Industrial Hero Section */
+        .hero {
+            min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
+            padding: 0 5vw; position: relative; z-index: 10;
+        }
+
+        .system-tag {
+            display: inline-block; background: var(--acid-green); color: #000;
+            font-weight: bold; padding: 8px 20px; margin-bottom: 30px;
+            text-transform: uppercase; font-size: 0.9rem; align-self: flex-start;
+            box-shadow: 4px 4px 0px var(--deep-purple);
         }
 
         .hero h1 {
-            font-family: var(--font-display); font-size: clamp(4rem, 10vw, 8rem); color: #fff;
-            text-transform: uppercase; line-height: 0.9; margin-bottom: 20px; text-shadow: 4px 4px 0px var(--alert-red);
+            font-family: var(--font-head); font-size: clamp(3.5rem, 8vw, 7rem);
+            color: #fff; text-transform: uppercase; line-height: 0.95; margin-bottom: 30px;
+            letter-spacing: -2px; text-shadow: 6px 6px 0px var(--deep-purple);
         }
 
         .hero p {
-            font-size: 1.2rem; max-width: 600px; color: #ccc; margin-bottom: 40px; line-height: 1.6;
-            border-left: 4px solid var(--holo-blue); padding-left: 20px; background: linear-gradient(90deg, rgba(0, 229, 255, 0.1), transparent);
+            font-size: 1.1rem; max-width: 650px; color: #b0b0b0; margin-bottom: 50px;
+            line-height: 1.7; border-left: 5px solid var(--deep-purple); padding-left: 20px;
+            background: rgba(74, 0, 224, 0.1); backdrop-filter: blur(5px);
         }
 
-        .btn-action {
-            padding: 15px 40px; background: transparent; color: var(--holo-blue); border: 2px solid var(--holo-blue);
-            font-family: var(--font-mono); font-size: 1.1rem; font-weight: bold; text-transform: uppercase;
-            cursor: pointer; position: relative; z-index: 1; transition: 0.3s;
+        .brutal-btn {
+            padding: 18px 45px; background: var(--void-black); color: var(--acid-green);
+            border: 3px solid var(--acid-green); font-family: var(--font-head);
+            font-size: 1.2rem; text-transform: uppercase; cursor: pointer;
+            box-shadow: 6px 6px 0px var(--acid-green); transition: 0.1s;
+            text-decoration: none; display: inline-block; align-self: flex-start;
         }
-        .btn-action:hover { background: var(--holo-blue); color: #000; box-shadow: 0 0 20px var(--holo-blue); }
+        .brutal-btn:hover { background: var(--acid-green); color: #000; box-shadow: 2px 2px 0px var(--acid-green); transform: translate(4px, 4px); }
 
-        /* Sections */
-        section { padding: 80px 5vw; max-width: 1400px; margin: 0 auto; perspective: 1000px; }
+        /* Solid Block Sections */
+        section { padding: 100px 5vw; max-width: 1400px; margin: 0 auto; perspective: 1200px; }
         
-        .sec-title {
-            font-family: var(--font-display); font-size: 3rem; color: #fff; margin-bottom: 50px;
-            text-transform: uppercase; display: flex; align-items: center; gap: 20px;
-        }
-        .sec-title::after { content: ''; flex: 1; height: 2px; background: linear-gradient(90deg, var(--alert-red), transparent); }
-
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; }
-
-        /* 3D Data Cards with Glitch Reveal */
-        .data-card {
-            background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 40px 30px;
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            position: relative; overflow: hidden;
-            transform-style: preserve-3d; transition: transform 0.1s ease-out, border-color 0.3s;
-            cursor: crosshair;
+        .header-block {
+            background: var(--text-light); color: var(--void-black); display: inline-block;
+            padding: 10px 25px; font-family: var(--font-head); font-size: 2.5rem;
+            text-transform: uppercase; margin-bottom: 60px; transform: skewX(-10deg);
         }
 
-        .glitch-bg {
-            position: absolute; top: -10%; left: -10%; width: 120%; height: 120%;
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 50px; }
+
+        /* --- 3D BRUTALIST DUAL-IMAGE CARDS --- */
+        .bio-card {
+            background: var(--void-black); border: 2px solid #333; padding: 40px;
+            position: relative; overflow: hidden; transform-style: preserve-3d;
+            transition: transform 0.1s ease-out, border-color 0.3s, box-shadow 0.3s;
+        }
+
+        /* 1. The Normal Default Image */
+        .default-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover; background-position: center;
-            opacity: 0; z-index: 0; mix-blend-mode: overlay; pointer-events: none;
-            transition: opacity 0.3s; filter: grayscale(100%) contrast(150%);
+            opacity: 0.5; z-index: 0; filter: grayscale(50%);
+            transition: opacity 0.4s ease;
         }
 
-        .data-card:hover { border-color: var(--holo-blue); box-shadow: 0 15px 30px rgba(0, 229, 255, 0.15); }
-        .data-card:hover .glitch-bg { animation: glitch-anim 0.2s steps(3) forwards; opacity: 0.4; }
-
-        @keyframes glitch-anim {
-            0% { transform: translate(0, 0); }
-            33% { transform: translate(-10px, 5px); }
-            66% { transform: translate(10px, -5px); }
-            100% { transform: translate(0, 0); }
+        /* 2. The Hidden Glitch Image */
+        .glitch-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover; background-position: center;
+            opacity: 0; z-index: 0; filter: sepia(100%) hue-rotate(50deg) saturate(300%) contrast(150%);
+            mix-blend-mode: hard-light; pointer-events: none; transition: opacity 0.2s;
         }
 
-        .card-content { position: relative; z-index: 2; transform: translateZ(30px); }
+        /* Hover Actions: Hide default, reveal and animate glitch */
+        .bio-card:hover { border-color: var(--acid-green); box-shadow: -10px 10px 0px var(--deep-purple); }
+        .bio-card:hover .default-bg { opacity: 0; }
+        .bio-card:hover .glitch-bg { animation: twitch 0.3s steps(4) forwards; opacity: 0.7; }
 
-        .card-content h3 { font-family: var(--font-mono); color: #fff; font-size: 1.5rem; margin-bottom: 15px; text-transform: uppercase; }
-        .card-content p { color: #aaa; line-height: 1.6; margin-bottom: 25px; font-size: 0.95rem; }
+        @keyframes twitch {
+            0% { transform: translate(0, 0) scale(1.05); }
+            25% { transform: translate(5px, -5px) scale(1.05); }
+            50% { transform: translate(-5px, 5px) scale(1.05); }
+            75% { transform: translate(5px, 5px) scale(1.05); }
+            100% { transform: translate(0, 0) scale(1.05); }
+        }
+
+        /* Text Layer */
+        .card-inner { position: relative; z-index: 2; transform: translateZ(40px); text-shadow: 2px 2px 4px #000; }
+        .card-inner h3 { font-family: var(--font-head); color: #fff; font-size: 1.8rem; margin-bottom: 15px; text-transform: uppercase; letter-spacing: -1px; }
+        .card-inner p { color: #ccc; line-height: 1.6; margin-bottom: 30px; font-weight: bold; }
         
-        .card-link { color: var(--alert-red); text-decoration: none; font-family: var(--font-mono); font-weight: bold; text-transform: uppercase; transition: 0.3s; }
-        .card-link:hover { color: var(--holo-blue); letter-spacing: 1px; }
+        .link-arrow { color: var(--acid-green); text-decoration: none; font-weight: bold; font-size: 1.1rem; text-transform: uppercase; background: #000; padding: 5px 10px; border: 1px solid var(--acid-green); transition: 0.3s; text-shadow: none;}
+        .link-arrow:hover { background: var(--acid-green); color: #000; }
 
         /* Full Width Banners */
-        .alert-banner {
-            background: rgba(255, 0, 60, 0.1); border-top: 2px solid var(--alert-red); border-bottom: 2px solid var(--alert-red);
-            padding: 80px 5vw; text-align: center; margin: 80px 0; backdrop-filter: blur(10px);
+        .strike-banner {
+            background: repeating-linear-gradient(45deg, var(--deep-purple), var(--deep-purple) 10px, #3a00b8 10px, #3a00b8 20px);
+            border-top: 5px solid var(--acid-green); border-bottom: 5px solid var(--acid-green);
+            padding: 80px 5vw; text-align: center; margin: 80px 0; position: relative; z-index: 10;
         }
-        .alert-banner h2 { font-family: var(--font-display); font-size: 3.5rem; text-transform: uppercase; text-shadow: 2px 2px 0px var(--alert-red); margin-bottom: 20px;}
-        .alert-banner p { max-width: 700px; margin: 0 auto 30px; font-size: 1.1rem; color: #ccc; line-height: 1.6; }
+        .strike-banner h2 { font-family: var(--font-head); font-size: 4rem; text-transform: uppercase; color: #fff; text-shadow: 4px 4px 0px #000; margin-bottom: 20px;}
+        .strike-banner p { max-width: 800px; margin: 0 auto 30px; font-size: 1.2rem; color: #fff; background: #000; padding: 20px; font-weight: bold; }
 
-        /* Audio Player UI */
-        .audio-controller {
-            position: fixed; bottom: 30px; right: 30px; background: rgba(0,0,0,0.8);
-            border: 1px solid var(--holo-blue); padding: 10px 20px; z-index: 1000;
-            font-family: var(--font-mono); color: var(--holo-blue); cursor: pointer;
-            display: flex; align-items: center; gap: 10px; transition: 0.3s;
+        /* Retro Audio Pill */
+        .audio-pill {
+            position: fixed; bottom: 30px; right: 30px; background: var(--void-black);
+            border: 2px solid var(--text-light); border-radius: 50px; padding: 12px 25px; z-index: 1000;
+            font-family: var(--font-head); color: var(--text-light); cursor: pointer;
+            display: flex; align-items: center; gap: 15px; transition: 0.3s; text-transform: uppercase;
         }
-        .audio-controller:hover { background: var(--holo-blue); color: #000; }
-        .audio-bars { display: flex; gap: 2px; height: 15px; align-items: flex-end; }
-        .bar { width: 3px; background: currentColor; height: 20%; transition: height 0.1s; }
-        .audio-controller.playing .bar { animation: sound 0.5s infinite alternate; }
-        .audio-controller.playing .bar:nth-child(2) { animation-delay: 0.2s; }
-        .audio-controller.playing .bar:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes sound { 0% { height: 20%; } 100% { height: 100%; } }
+        .audio-pill:hover { border-color: var(--acid-green); color: var(--acid-green); }
+        .audio-indicator { width: 12px; height: 12px; background: red; border-radius: 50%; transition: 0.3s; }
+        .audio-pill.playing .audio-indicator { background: var(--acid-green); box-shadow: 0 0 10px var(--acid-green); animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
 
-        /* ROOT ACCESS TERMINAL (Hidden by default) */
-        #terminal-overlay {
+        /* AMBER ROOT TERMINAL */
+        #amber-terminal {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: #000; z-index: 9999; display: none; padding: 40px;
-            font-family: var(--font-mono); color: #0f0; overflow: hidden;
+            background: #1a0a00; z-index: 9999; display: none; padding: 50px;
+            font-family: var(--font-body); color: #ffaa00; overflow: hidden;
+            box-shadow: inset 0 0 100px rgba(255, 170, 0, 0.2); text-transform: uppercase; font-weight: bold;
         }
-        #terminal-text { font-size: 1.2rem; line-height: 1.5; white-space: pre-wrap; }
-        .cursor { display: inline-block; width: 10px; height: 1.2rem; background: #0f0; animation: blink 1s infinite; }
+        #amber-terminal::after { content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); z-index: 2; background-size: 100% 2px, 3px 100%; pointer-events: none; }
+        #term-output { font-size: 1.4rem; line-height: 1.6; white-space: pre-wrap; position: relative; z-index: 3;}
+        .block-cursor { display: inline-block; width: 15px; height: 1.4rem; background: #ffaa00; animation: blink 1s infinite; position: relative; z-index: 3;}
 
-        footer { background: #000; border-top: 1px solid #333; padding: 40px 5vw; text-align: center; font-family: var(--font-mono); color: #666; }
+        footer { background: var(--void-black); border-top: 4px solid #333; padding: 50px 5vw; text-align: center; font-weight: bold; color: #666; }
+
+        @media (max-width: 768px) {
+            nav { flex-direction: column; gap: 15px; padding: 20px; }
+            .hero { padding-top: 120px; }
+            .hero h1 { font-size: 3rem; }
+            .strike-banner h2 { font-size: 2.5rem; }
+        }
     </style>
 </head>
 <body>
@@ -166,208 +198,235 @@
         <source src="soundtrack.mp3" type="audio/mpeg">
     </audio>
 
-    <canvas id="matrix-canvas"></canvas>
+    <canvas id="toxic-rain"></canvas>
 
-    <div class="glass-wrapper">
-        <nav>
-            <div class="logo">IIT<span> [TECHFEST]</span></div>
-            <div class="nav-links">
-                <a href="#competitions">Competitions</a>
-                <a href="#exhibitions">Exhibits</a>
-                <a href="#technoholix">Nights</a>
-            </div>
-        </nav>
-
-        <header class="hero">
-            <div class="status-badge">System Online // 2026 Paradigm</div>
-            <h1>The Cyborg<br>Awakening</h1>
-            <p>IIT Bombay invites you to step into the nexus. Experience the ultimate fusion of cutting-edge technology, robotic combat, global exhibitions, and cybernetic innovation.</p>
-            <div><button class="btn-action">Execute Override</button></div>
-        </header>
-
-        <section id="competitions">
-            <h2 class="sec-title">Core Protocols</h2>
-            <div class="grid">
-                <div class="data-card">
-                    <div class="glitch-bg" style="background-image: url('https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&q=80&w=600');"></div>
-                    <div class="card-content">
-                        <h3>Robowars</h3>
-                        <p>Construct heavily armored, weaponized cyber-machines and battle in India's most brutal combat robotics arena.</p>
-                        <a href="#" class="card-link">Decrypt Rules →</a>
-                    </div>
-                </div>
-                <div class="data-card">
-                    <div class="glitch-bg" style="background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=600');"></div>
-                    <div class="card-content">
-                        <h3>Meshmerize</h3>
-                        <p>Develop autonomous bots with advanced path-finding algorithms to navigate through complex, dynamic grid mazes.</p>
-                        <a href="#" class="card-link">Decrypt Rules →</a>
-                    </div>
-                </div>
-                <div class="data-card">
-                    <div class="glitch-bg" style="background-image: url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=600');"></div>
-                    <div class="card-content">
-                        <h3>Algo Trading</h3>
-                        <p>Code the most efficient trading algorithms to maximize virtual portfolios in a simulated market.</p>
-                        <a href="#" class="card-link">Decrypt Rules →</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="exhibitions">
-            <h2 class="sec-title">Global Data Nodes</h2>
-            <div class="grid">
-                <div class="data-card">
-                    <div class="glitch-bg" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=600');"></div>
-                    <div class="card-content">
-                        <h3>Tech Connect</h3>
-                        <p>Witness R&D projects from IIT Bombay, showcasing breakthrough advancements in AI and engineering.</p>
-                        <a href="#" class="card-link">Access Node →</a>
-                    </div>
-                </div>
-                <div class="data-card">
-                    <div class="glitch-bg" style="background-image: url('https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=600');"></div>
-                    <div class="card-content">
-                        <h3>Auto Expo</h3>
-                        <p>Experience the future of mobility. Featuring concept cars and autonomous vehicles engineered by global giants.</p>
-                        <a href="#" class="card-link">Access Node →</a>
-                    </div>
-                </div>
-                <div class="data-card">
-                    <div class="glitch-bg" style="background-image: url('https://images.unsplash.com/photo-1544531586-fde5298cdd40?auto=format&fit=crop&q=80&w=600');"></div>
-                    <div class="card-content">
-                        <h3>Lecture Series</h3>
-                        <p>Engage with world-renowned scientists and tech pioneers delivering keynotes on human-machine integration.</p>
-                        <a href="#" class="card-link">View Roster →</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <div id="technoholix" class="alert-banner" style="border-color: var(--holo-blue); background: rgba(0, 229, 255, 0.05);">
-            <h2 style="text-shadow: 2px 2px 0px var(--holo-blue);">Technoholix</h2>
-            <p>When the sun sets, the grid comes alive. Technoholix is the perfect blend of science and entertainment, featuring international artists, EDM nights, and synchronized laser spectacles.</p>
-            <button class="btn-action">Acquire Passes</button>
+    <nav>
+        <div class="logo">TECHFEST<span>_2026</span></div>
+        <div class="nav-links">
+            <a href="#competitions">Events</a>
+            <a href="#exhibitions">Expos</a>
+            <a href="#technoholix">Nights</a>
         </div>
+    </nav>
 
-        <footer>
-            <p>&copy; 2026 IIT BOMBAY TECHFEST. ALL SYSTEMS SECURED.</p>
-        </footer>
+    <header class="hero">
+        <div class="system-tag">Sys.Boot // 2026 Paradigm</div>
+        <h1>The Cyborg<br>Awakening</h1>
+        <p>IIT Bombay invites you to step into the nexus. Experience the ultimate fusion of cutting-edge technology, robotic combat, global exhibitions, and cybernetic innovation.</p>
+        <a href="#competitions" class="brutal-btn">Engage Override</a>
+    </header>
+
+    <section id="competitions">
+        <div class="header-block">Core Protocols</div>
+        <div class="grid">
+            <div class="bio-card">
+                <div class="default-bg" style="background-image: linear-gradient(rgba(18,18,22,0.8), rgba(18,18,22,0.8)), url('https://images.unsplash.com/photo-1555664424-778a1e5e1b48?auto=format&fit=crop&q=80&w=600');"></div>
+                <div class="glitch-bg" style="background-image: url('https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&q=80&w=600');"></div>
+                <div class="card-inner">
+                    <h3>Robowars</h3>
+                    <p>Construct heavily armored, weaponized cyber-machines and battle in India's most brutal combat arena.</p>
+                    <a href="#" class="link-arrow">Decrypt [x]</a>
+                </div>
+            </div>
+
+            <div class="bio-card">
+                <div class="default-bg" style="background-image: linear-gradient(rgba(18,18,22,0.8), rgba(18,18,22,0.8)), url('https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=600');"></div>
+                <div class="glitch-bg" style="background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=600');"></div>
+                <div class="card-inner">
+                    <h3>Meshmerize</h3>
+                    <p>Develop autonomous bots with advanced algorithms to navigate through complex, dynamic grid mazes.</p>
+                    <a href="#" class="link-arrow">Decrypt [x]</a>
+                </div>
+            </div>
+
+            <div class="bio-card">
+                <div class="default-bg" style="background-image: linear-gradient(rgba(18,18,22,0.8), rgba(18,18,22,0.8)), url('https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&q=80&w=600');"></div>
+                <div class="glitch-bg" style="background-image: url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=600');"></div>
+                <div class="card-inner">
+                    <h3>Algo Trading</h3>
+                    <p>Code the most efficient trading algorithms to maximize virtual portfolios in a simulated market.</p>
+                    <a href="#" class="link-arrow">Decrypt [x]</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="exhibitions">
+        <div class="header-block">Global Nodes</div>
+        <div class="grid">
+            <div class="bio-card">
+                <div class="default-bg" style="background-image: linear-gradient(rgba(18,18,22,0.8), rgba(18,18,22,0.8)), url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=600');"></div>
+                <div class="glitch-bg" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=600');"></div>
+                <div class="card-inner">
+                    <h3>Tech Connect</h3>
+                    <p>Witness R&D projects from IIT Bombay, showcasing breakthrough advancements in AI and engineering.</p>
+                    <a href="#" class="link-arrow">Access Node</a>
+                </div>
+            </div>
+
+            <div class="bio-card">
+                <div class="default-bg" style="background-image: linear-gradient(rgba(18,18,22,0.8), rgba(18,18,22,0.8)), url('https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=600');"></div>
+                <div class="glitch-bg" style="background-image: url('https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=600');"></div>
+                <div class="card-inner">
+                    <h3>Auto Expo</h3>
+                    <p>Experience the future of mobility. Featuring concept cars engineered by global giants.</p>
+                    <a href="#" class="link-arrow">Access Node</a>
+                </div>
+            </div>
+
+            <div class="bio-card">
+                <div class="default-bg" style="background-image: linear-gradient(rgba(18,18,22,0.8), rgba(18,18,22,0.8)), url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=600');"></div>
+                <div class="glitch-bg" style="background-image: url('https://images.unsplash.com/photo-1544531586-fde5298cdd40?auto=format&fit=crop&q=80&w=600');"></div>
+                <div class="card-inner">
+                    <h3>Lecture Series</h3>
+                    <p>Engage with world-renowned scientists and tech pioneers delivering keynotes on human-machine integration.</p>
+                    <a href="#" class="link-arrow">View Roster</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="technoholix" class="strike-banner">
+        <h2>Technoholix</h2>
+        <p>When the sun sets, the grid comes alive. Technoholix is the perfect blend of science and entertainment, featuring international artists, EDM nights, and synchronized laser spectacles.</p>
+        <button class="brutal-btn" style="background: #fff; color: var(--void-black); border-color: #fff; box-shadow: 6px 6px 0px #000;">Acquire Passes</button>
     </div>
 
-    <div class="audio-controller" id="audio-btn">
-        <span>AUDIO [OFF]</span>
-        <div class="audio-bars">
-            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-        </div>
+    <footer>
+        <p>&copy; 2026 IIT BOMBAY TECHFEST. NO UNAUTHORIZED ACCESS.</p>
+    </footer>
+
+    <div class="audio-pill" id="audio-btn">
+        <div class="audio-indicator"></div>
+        <span id="audio-text">Audio Off</span>
     </div>
 
-    <div id="terminal-overlay">
-        <div id="terminal-text"></div><span class="cursor"></span>
+    <div id="amber-terminal">
+        <div id="term-output"></div><span class="block-cursor"></span>
     </div>
 
     <script>
-        /* 1. HTML5 Canvas Matrix Background */
-        const canvas = document.getElementById('matrix-canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+        /* 1. TOXIC BIO-RAIN SCRIPT */
+        const canvasNode = document.querySelector('#toxic-rain');
+        const drawContext = canvasNode.getContext('2d');
+        
+        let sysWidth = canvasNode.width = window.innerWidth;
+        let sysHeight = canvasNode.height = window.innerHeight;
+        
+        window.addEventListener('resize', () => {
+            sysWidth = canvasNode.width = window.innerWidth;
+            sysHeight = canvasNode.height = window.innerHeight;
+        });
 
-        const chars = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*';
-        const drops = Array(Math.floor(canvas.width / 14)).fill(0).map(() => Math.random() * canvas.height);
+        const fontScale = 18;
+        const columnCount = Math.floor(sysWidth / fontScale);
+        const yPositions = Array.from({length: columnCount}).map(() => Math.random() * sysHeight);
+        const symbols = "0101010101☢☣⚠SYSTEMFAILURE";
 
-        setInterval(() => {
-            ctx.fillStyle = 'rgba(2, 2, 5, 0.08)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#00e5ff';
-            ctx.font = '14px monospace';
+        let lastDrawTime = 0;
+        
+        function renderToxicRain(currentTime) {
+            requestAnimationFrame(renderToxicRain);
+            
+            if (currentTime - lastDrawTime < 45) return;
+            lastDrawTime = currentTime;
 
-            for (let i = 0; i < drops.length; i++) {
-                const text = chars.charAt(Math.floor(Math.random() * chars.length));
-                ctx.fillText(text, i * 14, drops[i] * 14);
-                if (drops[i] * 14 > canvas.height && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
-            }
-        }, 35);
+            drawContext.fillStyle = 'rgba(9, 9, 11, 0.15)';
+            drawContext.fillRect(0, 0, sysWidth, sysHeight);
+            
+            drawContext.fillStyle = '#39ff14'; 
+            drawContext.font = `bold ${fontScale}px Courier New`;
 
-        /* 2. 3D Holographic Tilt Effect for Cards */
-        const cards = document.querySelectorAll('.data-card');
-        cards.forEach(card => {
-            card.addEventListener('mousemove', e => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top; 
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
+            yPositions.forEach((y, index) => {
+                const randomChar = symbols[Math.floor(Math.random() * symbols.length)];
+                const x = index * fontScale;
                 
-                const rotateX = ((y - centerY) / centerY) * -10;
-                const rotateY = ((x - centerX) / centerX) * 10;
+                drawContext.fillText(randomChar, x, y);
                 
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;
+                if (y > sysHeight && Math.random() > 0.96) {
+                    yPositions[index] = 0;
+                } else {
+                    yPositions[index] = y + fontScale;
+                }
+            });
+        }
+        requestAnimationFrame(renderToxicRain);
+
+        /* 2. 3D Brutalist Tilt Effect */
+        const brutalCards = document.querySelectorAll('.bio-card');
+        brutalCards.forEach(card => {
+            card.addEventListener('mousemove', event => {
+                const bounds = card.getBoundingClientRect();
+                const mouseX = event.clientX - bounds.left;
+                const mouseY = event.clientY - bounds.top; 
+                
+                const tiltX = ((mouseY - (bounds.height / 2)) / (bounds.height / 2)) * -8;
+                const tiltY = ((mouseX - (bounds.width / 2)) / (bounds.width / 2)) * 8;
+                
+                card.style.transform = `perspective(1200px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateY(-5px)`;
             });
             
             card.addEventListener('mouseleave', () => {
-                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)`;
+                card.style.transform = `perspective(1200px) rotateX(0deg) rotateY(0deg) translateY(0px)`;
             });
         });
 
-        /* 3. Ambient Audio Player */
-        const audioBtn = document.getElementById('audio-btn');
-        const bgMusic = document.getElementById('bg-music');
-        let isPlaying = false;
+        /* 3. Audio Player Toggle */
+        const playerBtn = document.querySelector('#audio-btn');
+        const audioSource = document.querySelector('#bg-music');
+        const textLabel = document.querySelector('#audio-text');
+        let musicActive = false;
 
-        audioBtn.addEventListener('click', () => {
-            if (isPlaying) {
-                bgMusic.pause();
-                audioBtn.classList.remove('playing');
-                audioBtn.querySelector('span').innerText = "AUDIO [OFF]";
+        playerBtn.addEventListener('click', () => {
+            if (musicActive) {
+                audioSource.pause();
+                playerBtn.classList.remove('playing');
+                textLabel.textContent = "Audio Off";
             } else {
-                bgMusic.play();
-                audioBtn.classList.add('playing');
-                audioBtn.querySelector('span').innerText = "AUDIO [ON]";
+                audioSource.play();
+                playerBtn.classList.add('playing');
+                textLabel.textContent = "Audio On";
             }
-            isPlaying = !isPlaying;
+            musicActive = !musicActive;
         });
 
-        /* 4. "Root Access" Easter Egg (Type 'cyborg' to activate) */
-        let typedKeyBuffer = "";
-        const secretCode = "cyborg";
-        const terminalOverlay = document.getElementById('terminal-overlay');
-        const terminalTextDiv = document.getElementById('terminal-text');
+        /* 4. Amber "Root Access" Easter Egg (Type 'cyborg') */
+        let keyHistory = "";
+        const targetWord = "cyborg";
+        const amberTerminal = document.querySelector('#amber-terminal');
+        const outputConsole = document.querySelector('#term-output');
         
-        const hackerText = `
-> INITIATING ROOT OVERRIDE...
-> BYPASSING FIREWALL... SUCCESS.
-> DECRYPTING MAINFRAME... SUCCESS.
-> ACCESSING IIT_TF_2026_DATABASE...
+        const failMessage = `
+[!] CRITICAL ERROR INTERCEPTED
+[!] EXECUTING ROOT OVERRIDE
+...
+...
+> FIREWALL BREACHED.
+> DECRYPTING IIT_TF_2026 ARCHIVES...
 > 
-> WARNING: UNAUTHORIZED ACCESS DETECTED.
-> WELCOME TO THE CYBORG NEXUS, ADMIN.
-> SYSTEM IS YOURS.
+[WARNING] UNAUTHORIZED BIO-METRIC DETECTED.
+[STATUS] ADMIN ACCESS GRANTED TO CYBORG NEXUS.
+> AWAITING COMMAND_
 `;
 
-        window.addEventListener('keydown', (e) => {
-            if(terminalOverlay.style.display === 'block') return;
+        document.addEventListener('keydown', (e) => {
+            if(amberTerminal.style.display === 'block') return;
 
-            typedKeyBuffer += e.key.toLowerCase();
-            
-            if(typedKeyBuffer.length > 10) {
-                typedKeyBuffer = typedKeyBuffer.slice(-10);
-            }
+            keyHistory += e.key.toLowerCase();
+            if(keyHistory.length > 10) keyHistory = keyHistory.slice(-10);
 
-            if (typedKeyBuffer.includes(secretCode)) {
-                if(isPlaying) bgMusic.pause();
-                terminalOverlay.style.display = 'block';
+            if (keyHistory.includes(targetWord)) {
+                if(musicActive) audioSource.pause();
+                amberTerminal.style.display = 'block';
                 document.body.style.overflow = 'hidden';
                 
-                let i = 0;
-                terminalTextDiv.innerHTML = "";
-                const typeInterval = setInterval(() => {
-                    terminalTextDiv.innerHTML += hackerText.charAt(i);
-                    i++;
-                    if(i >= hackerText.length) clearInterval(typeInterval);
-                }, 30);
+                let charIndex = 0;
+                outputConsole.innerHTML = "";
+                const typewriter = setInterval(() => {
+                    outputConsole.innerHTML += failMessage.charAt(charIndex);
+                    charIndex++;
+                    if(charIndex >= failMessage.length) clearInterval(typewriter);
+                }, 40);
             }
         });
     </script>
