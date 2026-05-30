@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IIT Bombay Techfest | The Cyborg Awakening</title>
+    <style>
+        /* Core Variables from the First "Sexy" Theme */
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-magenta: #ff00ea;
+            --dark-bg: #0a0a0c;
+            --panel-bg: rgba(20, 20, 25, 0.85);
+            --text-main: #e0e0e0;
+            --font-mono: 'Courier New', Courier, monospace;
+            --font-sans: 'Segoe UI', Roboto, Helvetica, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            overflow-x: hidden;
+            /* Cybernetic Grid Background */
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        /* Glitch Animation Keyframes */
+        @keyframes glitch {
+            0% { text-shadow: 2px 2px 0px var(--neon-magenta), -2px -2px 0px var(--neon-cyan); }
+            25% { text-shadow: -2px 2px 0px var(--neon-magenta), 2px -2px 0px var(--neon-cyan); }
+            50% { text-shadow: 2px -2px 0px var(--neon-magenta), -2px 2px 0px var(--neon-cyan); }
+            75% { text-shadow: -2px -2px 0px var(--neon-magenta), 2px 2px 0px var(--neon-cyan); }
+            100% { text-shadow: 2px 2px 0px var(--neon-magenta), -2px -2px 0px var(--neon-cyan); }
+        }
+
+        /* Navigation Bar */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background: rgba(10, 10, 12, 0.95);
+            border-bottom: 1px solid var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-family: var(--font-mono);
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 5px var(--neon-cyan);
+        }
+
+        .logo span { color: var(--neon-magenta); }
+
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            margin-left: 30px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--neon-magenta);
+            text-shadow: 0 0 8px var(--neon-magenta);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        /* Glowing Orb */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255,0,234,0.15) 0%, rgba(0,0,0,0) 70%);
+            z-index: -1;
+            border-radius: 50%;
+        }
+
+        .sponsor-tag {
+            color: var(--neon-cyan);
+            font-family: var(--font-mono);
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 5.5rem);
+            text-transform: uppercase;
+            font-family: var(--font-mono);
+            margin-bottom: 20px;
+            color: #fff;
+            line-height: 1.1;
+            animation: glitch 3s infinite alternate;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin-bottom: 40px;
+            line-height: 1.6;
+            color: #a0a0a0;
+        }
+
+        /* Buttons */
+        .btn-cyber {
+            padding: 15px 40px;
+            background: rgba(0, 243, 255, 0.05);
+            color: var(--neon-cyan);
+            font-family: var(--font-mono);
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: 2px solid var(--neon-cyan);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-cyber:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 20px var(--neon-cyan);
+            transform: scale(1.05);
+        }
+
+        /* Section Styling */
+        section {
+            padding: 100px 5vw;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            font-family: var(--font-mono);
+            font-size: 2.5rem;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 60px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            border-bottom: 1px solid rgba(255, 0, 234, 0.3);
+            padding-bottom: 20px;
+        }
+
+        .section-header span { color: var(--neon-magenta); }
+
+        /* Grid Layouts */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--panel-bg);
+            border: 1px solid #333;
+            border-left: 4px solid var(--neon-cyan);
+            padding: 40px 30px;
+            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-left-color: var(--neon-magenta);
+            border-right: 1px solid var(--neon-magenta);
+            box-shadow: 0 10px 30px rgba(255, 0, 234, 0.1);
+        }
+
+        .card h3 {
+            font-family: var(--font-mono);
+            color: var(--neon-cyan);
+            margin-bottom: 15px;
+            font-size: 1.6rem;
+            letter-spacing: 1px;
+        }
+
+        .card:hover h3 { color: var(--neon-magenta); }
+
+        .card p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #b0b0b0;
+            margin-bottom: 25px;
+        }
+
+        .card-link {
+            color: #fff;
+            text-decoration: none;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--neon-cyan);
+            padding-bottom: 2px;
+            transition: 0.3s;
+        }
+
+        .card-link:hover {
+            color: var(--neon-magenta);
+            border-bottom-color: var(--neon-magenta);
+        }
+
+        /* Highlight Banner (Technoholix/Ozone) */
+        .banner {
+            background: linear-gradient(45deg, rgba(255,0,234,0.1), rgba(0,243,255,0.05));
+            border: 1px solid rgba(255,0,234,0.3);
+            padding: 60px 40px;
+            text-align: center;
+            border-radius: 5px;
+            margin: 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .banner h2 {
+            font-family: var(--font-mono);
+            font-size: 3rem;
+            color: #fff;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 10px rgba(255,0,234,0.5);
+        }
+
+        .banner p { color: #ddd; max-width: 800px; margin: 0 auto 30px; font-size: 1.1rem; line-height: 1.6; }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            background: #020202;
+            border-top: 1px solid var(--neon-cyan);
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 50px;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            nav { flex-direction: column; gap: 15px; padding: 20px; }
+            .nav-links a { margin: 0 10px; font-size: 0.8rem; }
+            .hero { min-height: 80vh; padding-top: 100px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">IIT <span>TECHFEST</span></div>
+        <div class="nav-links">
+            <a href="#competitions">Competitions</a>
+            <a href="#exhibitions">Exhibitions</a>
+            <a href="#lectures">Lectures</a>
+            <a href="#technoholix">Technoholix</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="sponsor-tag">Asia's Largest Science & Technology Festival</div>
+        <h1>A Simulated<br>Paradigm</h1>
+        <p>IIT Bombay invites you to step into the nexus. Experience the ultimate fusion of cutting-edge technology, robotic combat, global exhibitions, and cybernetic innovation.</p>
+        <a href="#competitions" class="btn-cyber">Explore Nodes</a>
+    </header>
+
+    <section id="competitions">
+        <h2 class="section-header">Core <span>Competitions</span></h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Robowars</h3>
+                <p>The flagship event of Techfest. Construct heavily armored, weaponized cyber-machines and battle in India's most brutal combat robotics arena.</p>
+                <a href="#" class="card-link">View Rules ></a>
+            </div>
+            <div class="card">
+                <h3>Meshmerize</h3>
+                <p>Develop autonomous line-following bots with advanced path-finding algorithms to navigate through complex, dynamic grid mazes.</p>
+                <a href="#" class="card-link">View Rules ></a>
+            </div>
+            <div class="card">
+                <h3>Algorithmic Trading</h3>
+                <p>Sponsored by top financial firms. Code the most efficient trading algorithms to maximize virtual portfolios in a simulated market environment.</p>
+                <a href="#" class="card-link">View Rules ></a>
+            </div>
+        </div>
+    </section>
+
+    <section id="exhibitions">
+        <h2 class="section-header">Global <span>Exhibitions</span></h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Tech Connect</h3>
+                <p>Witness the latest R&D projects directly from the laboratories of IIT Bombay, showcasing breakthrough advancements in AI, biotech, and engineering.</p>
+                <a href="#" class="card-link">Explore ></a>
+            </div>
+            <div class="card">
+                <h3>International Auto Expo</h3>
+                <p>Experience the future of mobility. Featuring concept cars, hyper-cars, and autonomous vehicles engineered by the world's leading automotive giants.</p>
+                <a href="#" class="card-link">Explore ></a>
+            </div>
+            <div class="card">
+                <h3>The Lecture Series</h3>
+                <p>Engage with world-renowned scientists, Nobel Laureates, and tech pioneers as they deliver keynotes on the future of human-machine integration.</p>
+                <a href="#" class="card-link">View Speakers ></a>
+            </div>
+        </div>
+    </section>
+
+    <section id="technoholix" style="padding-top: 0;">
+        <div class="banner">
+            <h2>TECHNOHOLIX</h2>
+            <p>When the sun sets, the grid comes alive. Technoholix is the perfect blend of science and entertainment, featuring international artists, EDM nights, 3D holographic performances, and synchronized laser spectacles.</p>
+            <button class="btn-cyber" style="border-color: var(--neon-magenta); color: var(--neon-magenta);">Get Passes</button>
+        </div>
+    </section>
+
+    <section id="ozone" style="padding-top: 0;">
+        <div class="banner" style="background: linear-gradient(45deg, rgba(0,243,255,0.1), rgba(0,0,0,0.8)); border-color: var(--neon-cyan);">
+            <h2 style="color: var(--neon-cyan); text-shadow: 2px 2px 10px rgba(0,243,255,0.5);">OZONE</h2>
+            <p>Step away from the hardcore tech and decompress in the Ozone. Experience virtual reality gaming, laser tag, escape rooms, and quirky tech-based carnival games spread across the IIT Bombay campus.</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 IIT BOMBAY TECHFEST. ALL RIGHTS RESERVED.</p>
+        <p style="margin-top: 10px; font-size: 0.8rem;">Developed for the Cyborg Landing Page Challenge.</p>
+    </footer>
+
+</body>
+</html>
