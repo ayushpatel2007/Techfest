@@ -3,480 +3,372 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IIT Bombay Techfest | The Cyborg Awakening</title>
+    <title>IIT Bombay Techfest | Cybernetic Protocol</title>
     <style>
-        /* Core Cyberpunk Variables */
         :root {
-            --neon-cyan: #00f3ff;
-            --neon-magenta: #ff00ea;
-            --dark-bg: #050507;
-            --panel-bg: rgba(15, 15, 20, 0.7);
-            --text-main: #e0e0e0;
+            --holo-blue: #00e5ff;
+            --alert-red: #ff003c;
+            --deep-space: #020205;
+            --glass-bg: rgba(10, 15, 25, 0.6);
+            --glass-border: rgba(0, 229, 255, 0.2);
+            --text-main: #f0f0f0;
+            --font-display: 'Impact', 'Arial Black', sans-serif;
             --font-mono: 'Courier New', Courier, monospace;
-            --font-sans: 'Segoe UI', Roboto, Helvetica, sans-serif;
+            --font-sans: 'Segoe UI', Roboto, sans-serif;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            scroll-behavior: smooth;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
 
-        /* Custom Cursor & Selection */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--deep-space); }
+        ::-webkit-scrollbar-thumb { background: var(--holo-blue); }
+
         body {
-            background-color: var(--dark-bg);
+            background-color: var(--deep-space);
             color: var(--text-main);
             font-family: var(--font-sans);
             overflow-x: hidden;
-            cursor: crosshair; /* Futuristic cursor */
+            background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 229, 255, 0.03) 3px, rgba(0, 229, 255, 0.03) 3px);
         }
 
-        a, button {
-            cursor: pointer;
-        }
+        /* Dynamic Canvas */
+        #matrix-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; }
+        .glass-wrapper { position: relative; z-index: 10; }
 
-        ::selection {
-            background: var(--neon-magenta);
-            color: #fff;
-            text-shadow: 0 0 5px #fff;
-        }
-
-        /* CRT Scanline Overlay */
-        body::after {
-            content: " ";
-            display: block;
-            position: fixed;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 9999;
-            background-size: 100% 2px, 3px 100%;
-            pointer-events: none; /* Let clicks pass through to buttons */
-        }
-
-        /* Particle Background Container */
-        #particles-js {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: 0; /* Behind everything */
-            background-image: 
-                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
-        }
-
-        /* Ensure content sits above the particles */
-        .content-wrapper {
-            position: relative;
-            z-index: 10;
-        }
-
-        /* Glitch & Pulse Keyframes */
-        @keyframes glitch {
-            0% { text-shadow: 3px 3px 0px var(--neon-magenta), -3px -3px 0px var(--neon-cyan); }
-            25% { text-shadow: -3px 3px 0px var(--neon-magenta), 3px -3px 0px var(--neon-cyan); }
-            50% { text-shadow: 3px -3px 0px var(--neon-magenta), -3px 3px 0px var(--neon-cyan); }
-            75% { text-shadow: -3px -3px 0px var(--neon-magenta), 3px 3px 0px var(--neon-cyan); }
-            100% { text-shadow: 3px 3px 0px var(--neon-magenta), -3px -3px 0px var(--neon-cyan); }
-        }
-
-        @keyframes bassPulse {
-            0% { box-shadow: 0 0 15px rgba(255,0,234,0.1); transform: scale(1); }
-            50% { box-shadow: 0 0 50px rgba(255,0,234,0.5); transform: scale(1.02); border-color: #fff; }
-            100% { box-shadow: 0 0 15px rgba(255,0,234,0.1); transform: scale(1); }
-        }
-
-        /* Navigation Bar */
+        /* Navigation */
         nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 50px;
-            background: rgba(5, 5, 7, 0.85);
-            border-bottom: 1px solid var(--neon-cyan);
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            backdrop-filter: blur(12px);
+            position: fixed; width: 100%; top: 0; display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 4vw; background: rgba(10, 15, 25, 0.8); backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--glass-border); z-index: 1000;
         }
 
-        .logo {
-            font-family: var(--font-mono);
-            font-size: 1.5rem;
-            font-weight: 900;
-            color: #fff;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 0 0 8px var(--neon-cyan);
-        }
+        .logo { font-family: var(--font-display); font-size: 2rem; color: #fff; letter-spacing: 2px; text-transform: uppercase; }
+        .logo span { color: var(--alert-red); }
 
-        .logo span { color: var(--neon-magenta); }
-
+        .nav-links { display: flex; gap: 30px; }
         .nav-links a {
-            color: var(--text-main);
-            text-decoration: none;
-            margin-left: 35px;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: 0.3s ease;
+            color: var(--text-main); text-decoration: none; font-family: var(--font-mono); font-weight: bold;
+            font-size: 0.9rem; text-transform: uppercase; padding: 8px 15px;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+            transition: 0.3s;
         }
+        .nav-links a:hover { background: var(--holo-blue); color: #000; box-shadow: 0 0 15px var(--holo-blue); }
 
-        .nav-links a:hover {
-            color: var(--neon-magenta);
-            text-shadow: 0 0 10px var(--neon-magenta);
-        }
-
-        /* Hero Section */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 0 20px;
-            position: relative;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 450px;
-            height: 450px;
-            background: radial-gradient(circle, rgba(255,0,234,0.12) 0%, rgba(0,0,0,0) 70%);
-            z-index: -1;
-            border-radius: 50%;
-        }
-
-        .sponsor-tag {
-            color: var(--neon-cyan);
-            font-family: var(--font-mono);
-            letter-spacing: 4px;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            background: rgba(0,243,255,0.1);
-            padding: 5px 15px;
-            border: 1px solid var(--neon-cyan);
+        /* Hero */
+        .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 5vw; }
+        
+        .status-badge {
+            display: inline-block; font-family: var(--font-mono); color: var(--holo-blue); background: rgba(0, 229, 255, 0.1);
+            border: 1px solid var(--holo-blue); padding: 5px 15px; margin-bottom: 20px; text-transform: uppercase;
+            font-size: 0.8rem; letter-spacing: 2px; align-self: flex-start;
         }
 
         .hero h1 {
-            font-size: clamp(3.5rem, 8vw, 6.5rem);
-            text-transform: uppercase;
-            font-family: var(--font-sans);
-            font-weight: 900;
-            margin-bottom: 20px;
-            color: #fff;
-            line-height: 1.1;
-            animation: glitch 4s infinite alternate;
+            font-family: var(--font-display); font-size: clamp(4rem, 10vw, 8rem); color: #fff;
+            text-transform: uppercase; line-height: 0.9; margin-bottom: 20px; text-shadow: 4px 4px 0px var(--alert-red);
         }
 
         .hero p {
-            font-size: 1.2rem;
-            max-width: 700px;
-            margin-bottom: 40px;
-            line-height: 1.6;
-            color: #b0b0b0;
-            backdrop-filter: blur(5px);
+            font-size: 1.2rem; max-width: 600px; color: #ccc; margin-bottom: 40px; line-height: 1.6;
+            border-left: 4px solid var(--holo-blue); padding-left: 20px; background: linear-gradient(90deg, rgba(0, 229, 255, 0.1), transparent);
         }
 
-        /* Buttons */
-        .btn-cyber {
-            padding: 16px 45px;
-            background: rgba(0, 243, 255, 0.05);
-            color: var(--neon-cyan);
-            font-family: var(--font-mono);
-            font-size: 1rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            border: 1px solid var(--neon-cyan);
-            cursor: pointer;
-            position: relative;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            box-shadow: inset 0 0 10px rgba(0, 243, 255, 0.2);
+        .btn-action {
+            padding: 15px 40px; background: transparent; color: var(--holo-blue); border: 2px solid var(--holo-blue);
+            font-family: var(--font-mono); font-size: 1.1rem; font-weight: bold; text-transform: uppercase;
+            cursor: pointer; position: relative; z-index: 1; transition: 0.3s;
+        }
+        .btn-action:hover { background: var(--holo-blue); color: #000; box-shadow: 0 0 20px var(--holo-blue); }
+
+        /* Sections */
+        section { padding: 80px 5vw; max-width: 1400px; margin: 0 auto; perspective: 1000px; }
+        
+        .sec-title {
+            font-family: var(--font-display); font-size: 3rem; color: #fff; margin-bottom: 50px;
+            text-transform: uppercase; display: flex; align-items: center; gap: 20px;
+        }
+        .sec-title::after { content: ''; flex: 1; height: 2px; background: linear-gradient(90deg, var(--alert-red), transparent); }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; }
+
+        /* 3D Data Cards with Glitch Reveal */
+        .data-card {
+            background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 40px 30px;
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            position: relative; overflow: hidden;
+            transform-style: preserve-3d; transition: transform 0.1s ease-out, border-color 0.3s;
+            cursor: crosshair;
         }
 
-        .btn-cyber:hover {
-            background: var(--neon-cyan);
-            color: #000;
-            box-shadow: 0 0 25px var(--neon-cyan);
-            transform: translateY(-3px);
+        .glitch-bg {
+            position: absolute; top: -10%; left: -10%; width: 120%; height: 120%;
+            background-size: cover; background-position: center;
+            opacity: 0; z-index: 0; mix-blend-mode: overlay; pointer-events: none;
+            transition: opacity 0.3s; filter: grayscale(100%) contrast(150%);
         }
 
-        /* Section Layouts */
-        section {
-            padding: 100px 5vw;
-            max-width: 1400px;
-            margin: 0 auto;
+        .data-card:hover { border-color: var(--holo-blue); box-shadow: 0 15px 30px rgba(0, 229, 255, 0.15); }
+        .data-card:hover .glitch-bg { animation: glitch-anim 0.2s steps(3) forwards; opacity: 0.4; }
+
+        @keyframes glitch-anim {
+            0% { transform: translate(0, 0); }
+            33% { transform: translate(-10px, 5px); }
+            66% { transform: translate(10px, -5px); }
+            100% { transform: translate(0, 0); }
         }
 
-        .section-header {
-            font-family: var(--font-mono);
-            font-size: 2.5rem;
-            color: #fff;
-            text-align: center;
-            margin-bottom: 60px;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            border-bottom: 1px solid rgba(255, 0, 234, 0.3);
-            padding-bottom: 20px;
+        .card-content { position: relative; z-index: 2; transform: translateZ(30px); }
+
+        .card-content h3 { font-family: var(--font-mono); color: #fff; font-size: 1.5rem; margin-bottom: 15px; text-transform: uppercase; }
+        .card-content p { color: #aaa; line-height: 1.6; margin-bottom: 25px; font-size: 0.95rem; }
+        
+        .card-link { color: var(--alert-red); text-decoration: none; font-family: var(--font-mono); font-weight: bold; text-transform: uppercase; transition: 0.3s; }
+        .card-link:hover { color: var(--holo-blue); letter-spacing: 1px; }
+
+        /* Full Width Banners */
+        .alert-banner {
+            background: rgba(255, 0, 60, 0.1); border-top: 2px solid var(--alert-red); border-bottom: 2px solid var(--alert-red);
+            padding: 80px 5vw; text-align: center; margin: 80px 0; backdrop-filter: blur(10px);
         }
+        .alert-banner h2 { font-family: var(--font-display); font-size: 3.5rem; text-transform: uppercase; text-shadow: 2px 2px 0px var(--alert-red); margin-bottom: 20px;}
+        .alert-banner p { max-width: 700px; margin: 0 auto 30px; font-size: 1.1rem; color: #ccc; line-height: 1.6; }
 
-        .section-header span { color: var(--neon-magenta); }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 40px;
+        /* Audio Player UI */
+        .audio-controller {
+            position: fixed; bottom: 30px; right: 30px; background: rgba(0,0,0,0.8);
+            border: 1px solid var(--holo-blue); padding: 10px 20px; z-index: 1000;
+            font-family: var(--font-mono); color: var(--holo-blue); cursor: pointer;
+            display: flex; align-items: center; gap: 10px; transition: 0.3s;
         }
+        .audio-controller:hover { background: var(--holo-blue); color: #000; }
+        .audio-bars { display: flex; gap: 2px; height: 15px; align-items: flex-end; }
+        .bar { width: 3px; background: currentColor; height: 20%; transition: height 0.1s; }
+        .audio-controller.playing .bar { animation: sound 0.5s infinite alternate; }
+        .audio-controller.playing .bar:nth-child(2) { animation-delay: 0.2s; }
+        .audio-controller.playing .bar:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes sound { 0% { height: 20%; } 100% { height: 100%; } }
 
-        /* Cards */
-        .card {
-            background: var(--panel-bg);
-            border: 1px solid #222;
-            border-top: 3px solid var(--neon-cyan);
-            padding: 40px 30px;
-            transition: 0.4s ease;
-            position: relative;
-            backdrop-filter: blur(5px);
+        /* ROOT ACCESS TERMINAL (Hidden by default) */
+        #terminal-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #000; z-index: 9999; display: none; padding: 40px;
+            font-family: var(--font-mono); color: #0f0; overflow: hidden;
         }
+        #terminal-text { font-size: 1.2rem; line-height: 1.5; white-space: pre-wrap; }
+        .cursor { display: inline-block; width: 10px; height: 1.2rem; background: #0f0; animation: blink 1s infinite; }
 
-        .card:hover {
-            transform: translateY(-10px);
-            border-top-color: var(--neon-magenta);
-            border-bottom: 1px solid var(--neon-magenta);
-            box-shadow: 0 15px 35px rgba(255, 0, 234, 0.15);
-            background: rgba(20, 20, 30, 0.9);
-        }
-
-        .card h3 {
-            font-family: var(--font-mono);
-            color: var(--neon-cyan);
-            margin-bottom: 15px;
-            font-size: 1.6rem;
-            letter-spacing: 1px;
-            transition: 0.3s;
-        }
-
-        .card:hover h3 { color: var(--neon-magenta); }
-
-        .card p {
-            font-size: 0.95rem;
-            line-height: 1.6;
-            color: #a0a0a0;
-            margin-bottom: 25px;
-        }
-
-        .card-link {
-            color: #fff;
-            text-decoration: none;
-            font-family: var(--font-mono);
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            border-bottom: 1px solid var(--neon-cyan);
-            padding-bottom: 2px;
-            transition: 0.3s;
-            letter-spacing: 1px;
-        }
-
-        .card-link:hover {
-            color: var(--neon-magenta);
-            border-bottom-color: var(--neon-magenta);
-        }
-
-        /* Highlight Banners */
-        .banner {
-            background: linear-gradient(45deg, rgba(255,0,234,0.1), rgba(0,243,255,0.05));
-            border: 1px solid rgba(255,0,234,0.4);
-            padding: 80px 40px;
-            text-align: center;
-            border-radius: 5px;
-            margin: 80px 0;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-        }
-
-        #technoholix .banner {
-            animation: bassPulse 2s infinite ease-in-out; /* The Beat Pulse Effect */
-        }
-
-        .banner h2 {
-            font-family: var(--font-mono);
-            font-size: 3.5rem;
-            color: #fff;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 15px rgba(255,0,234,0.6);
-            letter-spacing: 5px;
-        }
-
-        .banner p { color: #ddd; max-width: 800px; margin: 0 auto 35px; font-size: 1.1rem; line-height: 1.7; }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 50px 20px;
-            background: #020202;
-            border-top: 1px solid var(--neon-cyan);
-            font-family: var(--font-mono);
-            font-size: 0.9rem;
-            color: #555;
-            position: relative;
-            z-index: 10;
-        }
-
-        /* Mobile */
-        @media (max-width: 768px) {
-            nav { flex-direction: column; gap: 15px; padding: 15px; }
-            .nav-links a { margin: 0 10px; font-size: 0.75rem; }
-            .hero { padding-top: 120px; }
-            .banner h2 { font-size: 2.5rem; }
-        }
+        footer { background: #000; border-top: 1px solid #333; padding: 40px 5vw; text-align: center; font-family: var(--font-mono); color: #666; }
     </style>
 </head>
 <body>
 
-    <div id="particles-js"></div>
+    <audio id="bg-music" loop>
+        <source src="https://assets.mixkit.co/music/preview/mixkit-cyberpunk-city-126.mp3" type="audio/mpeg">
+    </audio>
 
-    <div class="content-wrapper">
+    <canvas id="matrix-canvas"></canvas>
 
+    <div class="glass-wrapper">
         <nav>
-            <div class="logo">IIT <span>TECHFEST</span></div>
+            <div class="logo">IIT<span> [TECHFEST]</span></div>
             <div class="nav-links">
                 <a href="#competitions">Competitions</a>
-                <a href="#exhibitions">Exhibitions</a>
-                <a href="#lectures">Lectures</a>
-                <a href="#technoholix">Technoholix</a>
+                <a href="#exhibitions">Exhibits</a>
+                <a href="#technoholix">Nights</a>
             </div>
         </nav>
 
         <header class="hero">
-            <div class="sponsor-tag">Asia's Largest Sci-Tech Festival</div>
-            <h1>A Simulated<br>Paradigm</h1>
+            <div class="status-badge">System Online // 2026 Paradigm</div>
+            <h1>The Cyborg<br>Awakening</h1>
             <p>IIT Bombay invites you to step into the nexus. Experience the ultimate fusion of cutting-edge technology, robotic combat, global exhibitions, and cybernetic innovation.</p>
-            <a href="#competitions" class="btn-cyber">Initialize Override</a>
+            <div><button class="btn-action">Execute Override</button></div>
         </header>
 
         <section id="competitions">
-            <h2 class="section-header">Core <span>Competitions</span></h2>
+            <h2 class="sec-title">Core Protocols</h2>
             <div class="grid">
-                <div class="card">
-                    <h3>Robowars</h3>
-                    <p>The flagship event of Techfest. Construct heavily armored, weaponized cyber-machines and battle in India's most brutal combat robotics arena.</p>
-                    <a href="#" class="card-link">Access Protocol ></a>
+                <div class="data-card">
+                    <div class="glitch-bg" style="background-image: url('https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&q=80&w=600');"></div>
+                    <div class="card-content">
+                        <h3>Robowars</h3>
+                        <p>Construct heavily armored, weaponized cyber-machines and battle in India's most brutal combat robotics arena.</p>
+                        <a href="#" class="card-link">Decrypt Rules →</a>
+                    </div>
                 </div>
-                <div class="card">
-                    <h3>Meshmerize</h3>
-                    <p>Develop autonomous bots with advanced path-finding algorithms to navigate through complex, dynamic grid mazes.</p>
-                    <a href="#" class="card-link">Access Protocol ></a>
+                <div class="data-card">
+                    <div class="glitch-bg" style="background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=600');"></div>
+                    <div class="card-content">
+                        <h3>Meshmerize</h3>
+                        <p>Develop autonomous bots with advanced path-finding algorithms to navigate through complex, dynamic grid mazes.</p>
+                        <a href="#" class="card-link">Decrypt Rules →</a>
+                    </div>
                 </div>
-                <div class="card">
-                    <h3>Algorithmic Trading</h3>
-                    <p>Sponsored by top financial firms. Code the most efficient trading algorithms to maximize virtual portfolios in a simulated market.</p>
-                    <a href="#" class="card-link">Access Protocol ></a>
+                <div class="data-card">
+                    <div class="glitch-bg" style="background-image: url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=600');"></div>
+                    <div class="card-content">
+                        <h3>Algo Trading</h3>
+                        <p>Code the most efficient trading algorithms to maximize virtual portfolios in a simulated market.</p>
+                        <a href="#" class="card-link">Decrypt Rules →</a>
+                    </div>
                 </div>
             </div>
         </section>
 
         <section id="exhibitions">
-            <h2 class="section-header">Global <span>Exhibitions</span></h2>
+            <h2 class="sec-title">Global Data Nodes</h2>
             <div class="grid">
-                <div class="card">
-                    <h3>Tech Connect</h3>
-                    <p>Witness the latest R&D projects directly from the laboratories of IIT Bombay, showcasing breakthrough advancements in AI, biotech, and engineering.</p>
-                    <a href="#" class="card-link">Explore Node ></a>
+                <div class="data-card">
+                    <div class="glitch-bg" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=600');"></div>
+                    <div class="card-content">
+                        <h3>Tech Connect</h3>
+                        <p>Witness R&D projects from IIT Bombay, showcasing breakthrough advancements in AI and engineering.</p>
+                        <a href="#" class="card-link">Access Node →</a>
+                    </div>
                 </div>
-                <div class="card">
-                    <h3>International Auto Expo</h3>
-                    <p>Experience the future of mobility. Featuring concept cars, hyper-cars, and autonomous vehicles engineered by the world's leading automotive giants.</p>
-                    <a href="#" class="card-link">Explore Node ></a>
+                <div class="data-card">
+                    <div class="glitch-bg" style="background-image: url('https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=600');"></div>
+                    <div class="card-content">
+                        <h3>Auto Expo</h3>
+                        <p>Experience the future of mobility. Featuring concept cars and autonomous vehicles engineered by global giants.</p>
+                        <a href="#" class="card-link">Access Node →</a>
+                    </div>
                 </div>
-                <div class="card">
-                    <h3>The Lecture Series</h3>
-                    <p>Engage with world-renowned scientists, Nobel Laureates, and tech pioneers as they deliver keynotes on the future of human-machine integration.</p>
-                    <a href="#" class="card-link">View Speakers ></a>
+                <div class="data-card">
+                    <div class="glitch-bg" style="background-image: url('https://images.unsplash.com/photo-1544531586-fde5298cdd40?auto=format&fit=crop&q=80&w=600');"></div>
+                    <div class="card-content">
+                        <h3>Lecture Series</h3>
+                        <p>Engage with world-renowned scientists and tech pioneers delivering keynotes on human-machine integration.</p>
+                        <a href="#" class="card-link">View Roster →</a>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section id="technoholix" style="padding-top: 0;">
-            <div class="banner">
-                <h2>TECHNOHOLIX</h2>
-                <p>When the sun sets, the grid comes alive. Technoholix is the perfect blend of science and entertainment, featuring international artists, EDM nights, 3D holographic performances, and synchronized laser spectacles.</p>
-                <button class="btn-cyber" style="border-color: var(--neon-magenta); color: var(--neon-magenta);">Acquire Passes</button>
-            </div>
-        </section>
-
-        <section id="ozone" style="padding-top: 0;">
-            <div class="banner" style="background: linear-gradient(45deg, rgba(0,243,255,0.1), rgba(0,0,0,0.9)); border-color: var(--neon-cyan); animation: none;">
-                <h2 style="color: var(--neon-cyan); text-shadow: 2px 2px 15px rgba(0,243,255,0.6);">OZONE</h2>
-                <p>Step away from the hardcore tech and decompress in the Ozone. Experience virtual reality gaming, laser tag, escape rooms, and quirky tech-based carnival games spread across the campus.</p>
-            </div>
-        </section>
+        <div id="technoholix" class="alert-banner" style="border-color: var(--holo-blue); background: rgba(0, 229, 255, 0.05);">
+            <h2 style="text-shadow: 2px 2px 0px var(--holo-blue);">Technoholix</h2>
+            <p>When the sun sets, the grid comes alive. Technoholix is the perfect blend of science and entertainment, featuring international artists, EDM nights, and synchronized laser spectacles.</p>
+            <button class="btn-action">Acquire Passes</button>
+        </div>
 
         <footer>
-            <p>&copy; 2026 IIT BOMBAY TECHFEST. ALL NODES SECURED.</p>
-            <p style="margin-top: 10px; font-size: 0.8rem; color: #444;">Developed for the Cyborg Landing Page Challenge.</p>
+            <p>&copy; 2026 IIT BOMBAY TECHFEST. ALL SYSTEMS SECURED.</p>
         </footer>
-
     </div>
 
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <div class="audio-controller" id="audio-btn">
+        <span>AUDIO [OFF]</span>
+        <div class="audio-bars">
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        </div>
+    </div>
+
+    <div id="terminal-overlay">
+        <div id="terminal-text"></div><span class="cursor"></span>
+    </div>
+
     <script>
-        /* Particles Configuration - Creates the glowing cyber-mesh background */
-        particlesJS("particles-js", {
-            "particles": {
-                "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
-                "color": { "value": ["#00f3ff", "#ff00ea"] },
-                "shape": { "type": "circle" },
-                "opacity": { "value": 0.6, "random": false, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false } },
-                "size": { "value": 3, "random": true },
-                "line_linked": {
-                    "enable": true,
-                    "distance": 150,
-                    "color": "#00f3ff",
-                    "opacity": 0.2,
-                    "width": 1
-                },
-                "move": {
-                    "enable": true,
-                    "speed": 1.5,
-                    "direction": "none",
-                    "random": false,
-                    "straight": false,
-                    "out_mode": "out",
-                    "bounce": false,
-                    "attract": { "enable": false, "rotateX": 600, "rotateY": 1200 }
-                }
-            },
-            "interactivity": {
-                "detect_on": "canvas",
-                "events": {
-                    "onhover": { "enable": true, "mode": "grab" }, /* Network reaches for your mouse */
-                    "onclick": { "enable": true, "mode": "push" }, /* Click adds more particles */
-                    "resize": true
-                },
-                "modes": {
-                    "grab": { "distance": 200, "line_linked": { "opacity": 0.8 } },
-                    "push": { "particles_nb": 3 }
-                }
-            },
-            "retina_detect": true
+        /* 1. HTML5 Canvas Matrix Background */
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+
+        const chars = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*';
+        const drops = Array(Math.floor(canvas.width / 14)).fill(0).map(() => Math.random() * canvas.height);
+
+        setInterval(() => {
+            ctx.fillStyle = 'rgba(2, 2, 5, 0.08)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#00e5ff';
+            ctx.font = '14px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars.charAt(Math.floor(Math.random() * chars.length));
+                ctx.fillText(text, i * 14, drops[i] * 14);
+                if (drops[i] * 14 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }, 35);
+
+        /* 2. 3D Holographic Tilt Effect for Cards */
+        const cards = document.querySelectorAll('.data-card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top; 
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = ((y - centerY) / centerY) * -10;
+                const rotateY = ((x - centerX) / centerX) * 10;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)`;
+            });
+        });
+
+        /* 3. Ambient Audio Player */
+        const audioBtn = document.getElementById('audio-btn');
+        const bgMusic = document.getElementById('bg-music');
+        let isPlaying = false;
+
+        audioBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                bgMusic.pause();
+                audioBtn.classList.remove('playing');
+                audioBtn.querySelector('span').innerText = "AUDIO [OFF]";
+            } else {
+                bgMusic.play();
+                audioBtn.classList.add('playing');
+                audioBtn.querySelector('span').innerText = "AUDIO [ON]";
+            }
+            isPlaying = !isPlaying;
+        });
+
+        /* 4. "Root Access" Easter Egg (Type 'cyborg' to activate) */
+        let typedKeyBuffer = "";
+        const secretCode = "cyborg";
+        const terminalOverlay = document.getElementById('terminal-overlay');
+        const terminalTextDiv = document.getElementById('terminal-text');
+        
+        const hackerText = `
+> INITIATING ROOT OVERRIDE...
+> BYPASSING FIREWALL... SUCCESS.
+> DECRYPTING MAINFRAME... SUCCESS.
+> ACCESSING IIT_TF_2026_DATABASE...
+> 
+> WARNING: UNAUTHORIZED ACCESS DETECTED.
+> WELCOME TO THE CYBORG NEXUS, ADMIN.
+> SYSTEM IS YOURS.
+`;
+
+        window.addEventListener('keydown', (e) => {
+            if(terminalOverlay.style.display === 'block') return;
+
+            typedKeyBuffer += e.key.toLowerCase();
+            
+            if(typedKeyBuffer.length > 10) {
+                typedKeyBuffer = typedKeyBuffer.slice(-10);
+            }
+
+            if (typedKeyBuffer.includes(secretCode)) {
+                if(isPlaying) bgMusic.pause();
+                terminalOverlay.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+                
+                let i = 0;
+                terminalTextDiv.innerHTML = "";
+                const typeInterval = setInterval(() => {
+                    terminalTextDiv.innerHTML += hackerText.charAt(i);
+                    i++;
+                    if(i >= hackerText.length) clearInterval(typeInterval);
+                }, 30);
+            }
         });
     </script>
 </body>
