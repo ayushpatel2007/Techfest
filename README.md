@@ -6,7 +6,7 @@ This repository contains a responsive, highly interactive landing page developed
 * **Live Preview:**
  [https://ayushpatel2007.github.io/Techfest/#competitions]
 * **Video Demo:**
-  []
+  [https://drive.google.com/file/d/1THlho2OylXXb5Umau8vnH-y1DOXasg-B/view?usp=drive_link]
 
 ## 🚀 Technical Features & Micro-Interactions
 
