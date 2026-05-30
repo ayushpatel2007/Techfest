@@ -1,6 +1,6 @@
-# IIT Bombay Techfest 2026 | Bio-Hack Protocol Landing Page
+# IIT Bombay Techfest 2026 | Landing Page
 
-This repository contains a responsive, highly interactive landing page developed for the **IIT Bombay Techfest Campus Ambassador** task. The design revolves around a brutalist, "Toxic Bio-Hack" cyberpunk theme, merging modern UI/UX design with advanced front-end micro-interactions.
+This repository contains a responsive, highly interactive landing page developed for the **IIT Bombay Techfest** task. The design revolves around a brutalist, "Toxic Bio-Hack" cyberpunk theme, merging modern UI/UX design with advanced front-end micro-interactions.
 
 ## 🔗 Live Links
 * **Live Preview:** [Insert your GitHub Pages Link Here]
